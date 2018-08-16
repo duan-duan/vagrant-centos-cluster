@@ -14,30 +14,20 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "centos/7"
 
+  (1..3).each do |i|
 
-  config.vm.define "master" do | host |
-  host.vm.hostname = "master"
-  host.vm.network "private_network", ip: "192.168.33.17"
-  host.vm.provider "virtualbox" do |v|
-    v.memory = 512
+    config.vm.define "node#{i}" do |node|
+    node.vm.hostname = "node#{i}"
+    ip = "192.168.1.#{i+100}"
+    node.vm.network "private_network", ip: ip
+    node.vm.network "public_network", bridge: "en0: Wi-Fi (AirPort)", auto_config: true
+    node.vm.provider "virtualbox" do |vb|
+      vb.memory = "512"
+      vb.cpus = 1
+      vb.name = "node#{i}"
+    end
+    end
   end
-end
- 
-config.vm.define "node1" do | host |
-  host.vm.hostname = "node1"
-  host.vm.network "private_network", ip: "192.168.33.18"
-  host.vm.provider "virtualbox" do |v|
-    v.memory = 512
-  end
-end
- 
-config.vm.define "node2" do | host |
-  host.vm.hostname = "node2"
-  host.vm.network "private_network", ip: "192.168.33.19"
-  host.vm.provider "virtualbox" do |v|
-    v.memory = 512
-  end
-end
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
